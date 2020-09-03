@@ -3,14 +3,14 @@ using System;
 namespace garys_garage
 {
     
-    public class Ram : Vehicle
+    public class Ram : Vehicle, IGasVehicle
     {
         public double FuelCapacity { get; set; }
+        public int CurrentTankPercentage {get;set;}
 
         public void RefuelTank()
         {
-            //omitted
-        }
+    CurrentTankPercentage = 100;        }
         public override void Drive()
         {
             Console.WriteLine($"The {MainColor} Ram rolls by: Rrruuummmble!");

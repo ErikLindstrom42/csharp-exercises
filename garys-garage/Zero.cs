@@ -1,13 +1,15 @@
 using System;
 
-namespace garys_garage {
-public class Zero : Vehicle // Electric motorcycle
+namespace garys_garage
 {
-    public double BatteryKWh { get; set; }
-
-    public void ChargeBattery()
+    public class Zero : Vehicle, IElectricVehicle // Electric motorcycle
     {
-        // method definition omitted
+        public double BatteryKWh { get; set; }
+        public int CurrentChargePercentage { get; set; }
+
+        public void ChargeBattery()
+        {
+            CurrentChargePercentage = 100;
+        }
     }
-}
 }
