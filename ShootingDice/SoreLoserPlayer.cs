@@ -19,20 +19,15 @@ namespace ShootingDice
             if (myRoll > otherRoll)
             {
                 Console.WriteLine($"{Name} Wins!");
+                                    throw new Exception();
             }
             else if (myRoll < otherRoll)
             {
                 Console.WriteLine($"{other.Name} Wins!");
-                try
-                {
 
-                    throw new System.ArgumentException($"{Name} has flipped over the table and left", "original");
-                }
 
-                catch
-                {
-                    Console.WriteLine($"{Name} has flipped over the table and left");
-                }
+                    throw new Exception();
+
             }
             else
             {
