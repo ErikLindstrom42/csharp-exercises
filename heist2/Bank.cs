@@ -11,7 +11,7 @@ namespace heist2
         {
             get
             {
-                if (CashOnHand <= 0 || AlarmScore <= 0 || VaultScore <= 0 || SecurityGuardScore <= 0) return false;
+                if (AlarmScore <= 0 && VaultScore <= 0 && SecurityGuardScore <= 0) return false;
                 else return true;
             }
         }

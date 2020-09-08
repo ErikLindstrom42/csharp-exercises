@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace heist2
 {
@@ -32,11 +32,11 @@ namespace heist2
             {
                 Name = "Mr. Boddy",
                 SkillLevel = 50,
-                PercentageCut = 10
+                PercentageCut = 90
             };
             LockSpecialist mustard = new LockSpecialist()
             {
-                Name = "Colonol Mustard",
+                Name = "Colonel Mustard",
                 SkillLevel = 50,
                 PercentageCut = 10
 
@@ -56,6 +56,7 @@ namespace heist2
             string speciality;
             int skillLevel;
             int cut;
+            string selectedRecruit = null;
             Console.WriteLine($"There are currently {rolodex.Count} operatives in the rolodex");
 
             while (name != "")
@@ -99,22 +100,60 @@ namespace heist2
 
             }
 
-            Bank targetBank = new Bank() {
-            AlarmScore = new Random().Next(0,101),
-            VaultScore = new Random().Next(0,101),
-            SecurityGuardScore = new Random().Next(0,101),
-            CashOnHand = new Random().Next(50000, 10000000)
+            Bank targetBank = new Bank()
+            {
+                AlarmScore = new Random().Next(0, 101),
+                VaultScore = new Random().Next(0, 101),
+                SecurityGuardScore = new Random().Next(0, 101),
+                CashOnHand = new Random().Next(50000, 10000000)
             };
-
+            // Console.WriteLine($"Alarm: {targetBank.AlarmScore}");
+            // Console.WriteLine($"Vault: {targetBank.VaultScore}");
+            // Console.WriteLine($"Security: {targetBank.SecurityGuardScore}");
             targetBank.MostSecure();
             targetBank.LeastSecure();
 
-            foreach (IRobber robber in rolodex)
+            List<IRobber> crew = new List<IRobber>();
+            while (selectedRecruit != "")
             {
-                Console.WriteLine(robber.Name);
-                Console.WriteLine(robber.SkillLevel);
-                Console.WriteLine(robber.PercentageCut);
+                foreach (IRobber robber in rolodex.ToList())
+                {
+                    if (robber.PercentageCut > (100 - crew.Sum(item => item.PercentageCut)))
+                    {
+                        rolodex.Remove(robber);
+                    }
+                }
+                for (int i = 0; i < rolodex.Count; i++)
+                {
+                    Console.WriteLine($"{i}) {rolodex[i].Name}");
+                    Console.WriteLine($"Specialty: {rolodex[i].Specialty}");
+                    Console.WriteLine($"Skill Level:{rolodex[i].SkillLevel}");
+                    Console.WriteLine($"Percent cut of the take: {rolodex[i].PercentageCut}\n");
+
+                }
+                Console.WriteLine("Please select your recruit ID from the list above or submit a blank entry to start the heist.");
+                selectedRecruit = Console.ReadLine();
+                if (selectedRecruit == "") break;
+                crew.Add(rolodex[Int32.Parse(selectedRecruit)]);
+                rolodex.Remove(rolodex[Int32.Parse(selectedRecruit)]);
+                Console.WriteLine($"Total appropriated cut is {crew.Sum(item => item.PercentageCut)}");
             }
+            foreach (IRobber robber in crew)
+            {
+                robber.PerformSkill(targetBank);
+                Console.WriteLine($"{robber.Name} used their {robber.Specialty} skills");
+            }
+            if (targetBank.IsSecure)
+            {
+                Console.WriteLine($"The bank resisted the attempt! AlarmScore: {targetBank.AlarmScore}, VaultScore: {targetBank.VaultScore}, SecurityGuardScore: {targetBank.SecurityGuardScore}");
+            }
+            else
+            {
+                Console.WriteLine($"The bank was robbed! AlarmScore: {targetBank.AlarmScore}, VaultScore: {targetBank.VaultScore}, SecurityGuardScore: {targetBank.SecurityGuardScore}");
+                double myCut = ((100 - crew.Sum(item => item.PercentageCut)) * targetBank.CashOnHand) / 100;
+                Console.WriteLine($"Your crew stole ${targetBank.CashOnHand}. After paying all of them you get ${myCut}");
+            }
+
         }
     }
 }
