@@ -3,7 +3,7 @@ namespace garys_garage {
     {
         int CurrentChargePercentage {get;set;}
 
-        public void ChargeBattery()
+        public void ChargeBattery();
     }
 
 }

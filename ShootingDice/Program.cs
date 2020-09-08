@@ -42,7 +42,7 @@ namespace ShootingDice
             SoreLoserPlayer player5 = new SoreLoserPlayer();
             player5.Name = "Nofun McPrissypants";
 
-            player5.Play(large);
+            //player5.Play(large);
 
             UpperHalfPlayer player6 = new UpperHalfPlayer();
             player6.Name = "Silver Spoon";
@@ -85,12 +85,28 @@ namespace ShootingDice
                 Player player2 = shuffledPlayers[i + 1];
                 if (player1.Name != "Surething Sue")
                 {
-                    player2.Play(player1);
+                    try
+                    {
+                        player2.Play(player1);
+                    }
+
+
+                    catch (System.Exception ex)
+                    {
+                        Console.WriteLine($"The loser has flipped over the table and left");
+                    }
                 }
                 else
-                {
-                    player1.Play(player2);
-                }
+                    try
+                    {
+                        player1.Play(player2);
+                    }
+
+
+                    catch (System.Exception ex)
+                    {
+                        Console.WriteLine($"The loser has flipped over the table and left");
+                    }
             }
         }
     }
