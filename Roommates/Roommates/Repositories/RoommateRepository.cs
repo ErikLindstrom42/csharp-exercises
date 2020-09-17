@@ -163,8 +163,6 @@ namespace Roommates.Repositories
                     cmd.Parameters.AddWithValue("@id", roommate.Id);
 
                     cmd.ExecuteNonQuery();
-
-
                 }
             }
         }
