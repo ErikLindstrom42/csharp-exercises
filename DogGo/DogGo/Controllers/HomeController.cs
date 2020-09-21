@@ -25,7 +25,19 @@ namespace DogGo.Controllers
 
         public IActionResult Privacy()
         {
+
             return View();
+            
+        }
+
+        public IActionResult Logout()
+        {
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
+            return View();
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

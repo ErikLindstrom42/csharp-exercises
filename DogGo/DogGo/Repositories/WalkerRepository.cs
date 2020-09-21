@@ -37,10 +37,10 @@ namespace DogGo.Repositories
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<Walker> owners = new List<Walker>();
+                    List<Walker> walkers = new List<Walker>();
                     while (reader.Read())
                     {
-                        Walker owner = new Walker
+                        Walker walker = new Walker
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
@@ -48,12 +48,12 @@ namespace DogGo.Repositories
                             NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
                         };
 
-                        owners.Add(owner);
+                        walkers.Add(walker);
                     }
 
                     reader.Close();
 
-                    return owners;
+                    return walkers;
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿@model DogGo.Models.Walker
+﻿@model DogGo.Models.ViewModels.WalkerProfileViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -7,37 +7,75 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Walker</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NeighborhoodId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NeighborhoodId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-            <img class="bg-info" src="@Model.ImageUrl" alt="avatar" />
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <h1 class="mb-4">@Model.Walker.Name</h1>
+    <h3>@Model.Walks[0].Walker.Neighborhood.Name</h3>
+
+    <section class="container">
+        <img style="width:100px;float:left;margin-right:20px"
+             src=@Model.Walks[0].Walker.ImageUrl />
+        @*<div>
+            <label class="font-weight-bold">Address:</label>
+            <span>@Model.Owner.Address</span>
+        </div>
+        <div>
+            <label class="font-weight-bold">Phone:</label>
+            <span>@Model.Owner.Phone</span>
+        </div>
+        <div>
+            <label class="font-weight-bold">Email:</label>
+            <span>@Model.Owner.Email</span>
+        </div>*@
+    </section>
+
+    <hr class="mt-5" />
+    <div class="clearfix"></div>
+    <div>Total walk time: @(Model.Walks.Sum(walk => walk.Duration)/3600) hours and @(Model.Walks.Sum(walk=> walk.Duration) % 3600 / 60) minutes</div>
+    
+
+    <div class="row">
+        <section class="col-8 container mt-5">
+            <h1 class="text-left">Recent Walks</h1>
+
+            <div class="row">
+                @foreach (Walk walk in Model.Walks)
+                {
+                    <div class="card m-4" style="width: 18rem;">
+                       
+                        <div class="card-body">
+                            <div>
+                                <label class="font-weight-bold">Date:</label>
+                                <span>@walk.Date.ToShortDateString()</span>
+                            </div>
+                            <div>
+                                <label class="font-weight-bold">Duration:</label>
+                                <span>@(walk.Duration/60) min</span>
+                            </div>
+                            <div>
+                                <label class="font-weight-bold">Duration:</label>
+                                <span>@walk.Dog.Owner.Name</span>
+                            </div>
+                            <div>
+                                <label class="font-weight-bold">Duration:</label>
+                                <span>@walk.Walker.Neighborhood.Name</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+
+        @*<section class="col-lg-4 col-md-8 container mt-5">
+            <h1>Walkers Near Me</h1>
+
+            <ul class="list-group mt-4">
+                @foreach (Walker walker in Model.Walkers)
+                {
+                    <li class="list-group-item disabled" aria-disabled="true">
+                        <img src="@walker.ImageUrl" style="width:50px" />
+                        <span class="font-weight-bold ml-4">@walker.Name</span>
+                    </li>
+                }
+            </ul>
+        </section>*@
+    </div>
 </div>

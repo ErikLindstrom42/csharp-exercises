@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DogGo.Repositories;
 using DogGo.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DogGo.Controllers
 {
@@ -19,9 +21,13 @@ namespace DogGo.Controllers
             _dogRepo = dogRepository;
         }
         // GET: Dogs
-        public IActionResult Index()
+        [Authorize]
+        public ActionResult Index()
         {
-            List<Dog> dogs = _dogRepo.GetAllDogs();
+            int ownerId = GetCurrentUserId();
+
+            List<Dog> dogs = _dogRepo.GetDogsByOwnerId(ownerId);
+
             return View(dogs);
         }
 
@@ -47,10 +53,13 @@ namespace DogGo.Controllers
         // POST: Dog/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
+
         public ActionResult Create(Dog dog)
         {
             try
             {
+                dog.OwnerId = GetCurrentUserId();
                 _dogRepo.AddDog(dog);
                 return RedirectToAction("Index");
             }
@@ -61,13 +70,20 @@ namespace DogGo.Controllers
         }
 
         // GET: Dog/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
+
             Dog dog = _dogRepo.GetDogById(id);
 
             if (dog == null)
             {
                 return NotFound();
+            }
+            int ownerId = GetCurrentUserId();
+            if (ownerId != dog.OwnerId)
+            {
+                return Unauthorized();
             }
 
             return View(dog);
@@ -76,8 +92,14 @@ namespace DogGo.Controllers
         // POST: Dog/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(int id, Dog dog)
         {
+            int ownerId = GetCurrentUserId();
+            if (ownerId != dog.OwnerId)
+            {
+                return Unauthorized();
+            }
             try
             {
                 _dogRepo.UpdateDog(dog);
@@ -94,6 +116,16 @@ namespace DogGo.Controllers
         public ActionResult Delete(int id)
         {
             Dog dog = _dogRepo.GetDogById(id);
+            int ownerId = GetCurrentUserId();
+            if (dog == null)
+            {
+                return NotFound();
+            }
+            
+            if (ownerId != dog.OwnerId)
+            {
+                return Unauthorized();
+            }
             return View(dog);
         }
 
@@ -102,6 +134,15 @@ namespace DogGo.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Dog dog)
         {
+            if (dog == null)
+            {
+                return NotFound();
+            }
+            int ownerId = GetCurrentUserId();
+            if (ownerId != dog.OwnerId)
+            {
+                return Unauthorized();
+            }
             try
             {
                 _dogRepo.DeleteDog(id);
@@ -112,6 +153,12 @@ namespace DogGo.Controllers
             {
                 return View(dog);
             }
+        }
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            return int.Parse(id);
         }
     }
 }
